@@ -1,11 +1,5 @@
-# vkl
-
-[![ci](https://github.com/Giuseppe-Bianc/vkl/actions/workflows/ci.yml/badge.svg)](https://github.com/Giuseppe-Bianc/vkl/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/Giuseppe-Bianc/vkl/branch/main/graph/badge.svg)](https://codecov.io/gh/Giuseppe-Bianc/vkl)
-[![CodeQL](https://github.com/Giuseppe-Bianc/vkl/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/Giuseppe-Bianc/vkl/actions/workflows/codeql-analysis.yml)
-
-## About vkl
-a  vulkan.hpp  renderer
+# About vkl
+a experimental vulkan.hpp  renderer
 
 
 ## More Details
