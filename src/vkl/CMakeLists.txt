@@ -18,14 +18,14 @@ endif ()
 
 target_link_libraries(
         vkl
-  PRIVATE vkl::vkl_options
-          vkl::vkl_warnings)
+        PRIVATE vkl::vkl_options
+        vkl::vkl_warnings)
 
 target_link_system_libraries(
         vkl
-  PRIVATE
-          fmt::fmt
-          spdlog::spdlog
+        PRIVATE
+        fmt::fmt
+        spdlog::spdlog
         vkl-lib
 )
 

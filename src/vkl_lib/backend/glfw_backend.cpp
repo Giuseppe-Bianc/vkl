@@ -122,8 +122,66 @@ GLFWwindow *initWindow(int width, int height, std::string_view name) {
     return window;
 }
 
-GLFWwindow *build_window(int width, int height, std::string_view name) {
-    return initWindow(width, height, name);
-}
+GLFWwindow *build_window(int width, int height, std::string_view name) { return initWindow(width, height, name); }
 
+/*
+fs::path Window::calculateRelativePathToSrcShaders(const fs::path &executablePath, const fs::path &targetFile) {
+        // Get the parent directory of the executable path
+        fs::path parentDir = executablePath.parent_path();
+
+        // Traverse up the directory tree until we find a directory containing "src"
+        while(!fs::exists(parentDir / "src")) {
+            parentDir = parentDir.parent_path();
+            // Check if we reached the root directory and "src" was not found
+            if(parentDir == parentDir.root_path()) {
+                std::cerr << "Error: 'src' directory not found in the path.\n";
+                return {};  // Return an empty path or handle error as needed
+            }
+        }
+
+        // Move up one more level to reach the parent directory of "src"
+        parentDir = parentDir.parent_path();
+        const auto resp = fs::path("shaders");
+        // Construct the relative path to the target file
+        const auto relativePathToTarget = parentDir / resp / targetFile;
+        // Construct the path to the target file under "src/engine/res"
+
+        // Calculate the relative path from the executable's directory
+        const auto relativePath = fs::relative(relativePathToTarget, executablePath);
+
+        return relativePath.lexically_normal();
+        // return parentDir;
+    }
+
+    fs::path Window::calculateRelativePathToSrcModels(const fs::path &executablePath, const fs::path &targetFile) {
+        // Get the parent directory of the executable path
+        fs::path parentDir = executablePath.parent_path();
+
+        // Traverse up the directory tree until we find a directory containing "src"
+        while(!fs::exists(parentDir / "src")) {
+            parentDir = parentDir.parent_path();
+            // Check if we reached the root directory and "src" was not found
+            if(parentDir == parentDir.root_path()) {
+                std::cerr << "Error: 'src' directory not found in the path.\n";
+                return {};  // Return an empty path or handle error as needed
+            }
+        }
+
+        // Move up one more level to reach the parent directory of "src"
+        parentDir = parentDir.parent_path();
+        const auto resp = fs::path("models");
+        // Construct the relative path to the target file
+        const auto relativePathToTarget = parentDir / resp / targetFile;
+        // Construct the path to the target file under "src/engine/res"
+
+        // Calculate the relative path from the executable's directory
+        const auto relativePath = fs::relative(relativePathToTarget, executablePath);
+
+        return relativePath.lexically_normal();
+        // return parentDir;
+    }
+
+    void Window::createWindowSurface(VkInstance instance, VkSurfaceKHR *surface) {
+        if(glfwCreateWindowSurface(instance, window, nullptr, surface)) { throw std::runtime_error("failed to  create window surface"); }
+    }*/
 // NOLINTEND(*-include-cleaner, *-easily-swappable-parameters, *-implicit-bool-conversion, *-init-variables)

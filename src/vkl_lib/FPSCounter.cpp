@@ -8,7 +8,8 @@
 DISABLE_WARNINGS_PUSH(26447)
 
 FPSCounter::FPSCounter(GLFWwindow *window, std::string_view title) noexcept
-  : last_time(clock::now()), frames(0), fps(0.0L), ms_per_frame(0.0L), m_window(window), m_title(title)/* frameTime(0.0L), totalTime(0.0L) */{}
+  : last_time(clock::now()), frames(0), fps(0.0L), ms_per_frame(0.0L), m_window(window),
+    m_title(title) /* frameTime(0.0L), totalTime(0.0L) */ {}
 
 std::string FPSCounter::transformTime(const long double inputTimeMilli) const noexcept {
     const auto &[ms, us, ns] = vnd::ValueLable::calculateTransformTimeMilli(inputTimeMilli);

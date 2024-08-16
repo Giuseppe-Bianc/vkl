@@ -1,7 +1,6 @@
 #pragma once
-#include <GLFW/glfw3.h>
 #include "../headers.hpp"
-
+#include <GLFW/glfw3.h>
 
 void errorCallback(int error, const char *description);
 void keyCallback(GLFWwindow *window, int key, [[maybe_unused]] int scancode, int action, [[maybe_unused]] int mods);
@@ -20,4 +19,4 @@ GLFWwindow *initWindow(int width, int height, std::string_view name);
  * @param name name of the window
  * @return GLFWwindow* The created window
  */
-GLFWwindow* build_window(int width, int height, std::string_view name);
+GLFWwindow *build_window(int width, int height, std::string_view name);

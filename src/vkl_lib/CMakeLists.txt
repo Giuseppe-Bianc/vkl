@@ -7,7 +7,8 @@ add_library(vkl-lib
         FPSCounter.cpp
         renderer/renderer.cpp
         controller/app.cpp
-        backend/glfw_backend.cpp)
+        backend/glfw_backend.cpp
+        renderer/instance.cpp)
 
 
 add_library(vkl::vkl-lib ALIAS vkl-lib)
@@ -16,16 +17,16 @@ add_library(vkl::vkl-lib ALIAS vkl-lib)
 get_target_property(target_name vkl-lib NAME)
 
 if (CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
-  target_compile_options(${target_name} PRIVATE -march=native)
-  message(STATUS "Set SIMD instructions to AVX2 for target '${target_name}' with '${CMAKE_CXX_COMPILER_ID}' compiler.")
+    target_compile_options(${target_name} PRIVATE -march=native)
+    message(STATUS "Set SIMD instructions to AVX2 for target '${target_name}' with '${CMAKE_CXX_COMPILER_ID}' compiler.")
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-  target_compile_options(${target_name} PRIVATE -march=native)
-  message(STATUS "Set SIMD instructions to AVX2 for target '${target_name}' with '${CMAKE_CXX_COMPILER_ID}' compiler.")
+    target_compile_options(${target_name} PRIVATE -march=native)
+    message(STATUS "Set SIMD instructions to AVX2 for target '${target_name}' with '${CMAKE_CXX_COMPILER_ID}' compiler.")
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND MSVC_VERSION GREATER 1900)
-  target_compile_options(${target_name} PRIVATE /arch:AVX2)
-  message(STATUS "Set SIMD instructions to AVX2 for target '${target_name}' with '${CMAKE_CXX_COMPILER_ID}' compiler.")
+    target_compile_options(${target_name} PRIVATE /arch:AVX2)
+    message(STATUS "Set SIMD instructions to AVX2 for target '${target_name}' with '${CMAKE_CXX_COMPILER_ID}' compiler.")
 else ()
-  message(STATUS "Impossible to set SIMD instructions to AVX2 for target '${target_name}' with '${CMAKE_CXX_COMPILER_ID}' compiler.")
+    message(STATUS "Impossible to set SIMD instructions to AVX2 for target '${target_name}' with '${CMAKE_CXX_COMPILER_ID}' compiler.")
 endif ()
 
 target_link_libraries(vkl-lib PRIVATE vkl_options vkl_warnings)
@@ -98,33 +99,33 @@ file(GLOB_RECURSE GLSL_SOURCE_FILES
 )
 
 foreach (GLSL ${GLSL_SOURCE_FILES})
-  get_filename_component(FILE_NAME ${GLSL} NAME)
-  set(SPIRV "${PROJECT_SOURCE_DIR}/shaders/${FILE_NAME}.spv")
-  add_custom_command(
-          OUTPUT ${SPIRV}
-          COMMAND ${GLSL_VALIDATOR} -V ${GLSL} -o ${SPIRV}
-          DEPENDS ${GLSL})
-  list(APPEND SPIRV_BINARY_FILES ${SPIRV})
+    get_filename_component(FILE_NAME ${GLSL} NAME)
+    set(SPIRV "${PROJECT_SOURCE_DIR}/shaders/${FILE_NAME}.spv")
+    add_custom_command(
+            OUTPUT ${SPIRV}
+            COMMAND ${GLSL_VALIDATOR} -V ${GLSL} -o ${SPIRV}
+            DEPENDS ${GLSL})
+    list(APPEND SPIRV_BINARY_FILES ${SPIRV})
 endforeach (GLSL)
 
 foreach (BSPIRV ${SPIRV_BINARY_FILES})
-  get_filename_component(FILE_NAME ${BSPIRV} NAME_WLE)
-  set(SPIRV "${PROJECT_SOURCE_DIR}/shaders/${FILE_NAME}.opt.spv")
-  add_custom_command(
-          OUTPUT ${SPIRV}
-          COMMAND ${SPIRV_OPT} ${BSPIRV} -o ${SPIRV} -O
-          DEPENDS ${BSPIRV})
-  list(APPEND SPIRV_BINARY_FILES_OPT ${SPIRV})
+    get_filename_component(FILE_NAME ${BSPIRV} NAME_WLE)
+    set(SPIRV "${PROJECT_SOURCE_DIR}/shaders/${FILE_NAME}.opt.spv")
+    add_custom_command(
+            OUTPUT ${SPIRV}
+            COMMAND ${SPIRV_OPT} ${BSPIRV} -o ${SPIRV} -O
+            DEPENDS ${BSPIRV})
+    list(APPEND SPIRV_BINARY_FILES_OPT ${SPIRV})
 endforeach (BSPIRV)
 
 foreach (RSPIRV ${SPIRV_BINARY_FILES_OPT})
-  get_filename_component(FILE_NAME ${RSPIRV} NAME_WLE)
-  set(SPIRV "${PROJECT_SOURCE_DIR}/shaders/${FILE_NAME}.rmp.spv")
-  add_custom_command(
-          OUTPUT ${SPIRV}
-          COMMAND ${SPIRV_REMAP} -v --do-everything -i ${RSPIRV} -o ${SPIRV}
-          DEPENDS ${RSPIRV})
-  list(APPEND SPIRV_BINARY_FILES_REMAP ${SPIRV})
+    get_filename_component(FILE_NAME ${RSPIRV} NAME_WLE)
+    set(SPIRV "${PROJECT_SOURCE_DIR}/shaders/${FILE_NAME}.rmp.spv")
+    add_custom_command(
+            OUTPUT ${SPIRV}
+            COMMAND ${SPIRV_REMAP} -v --do-everything -i ${RSPIRV} -o ${SPIRV}
+            DEPENDS ${RSPIRV})
+    list(APPEND SPIRV_BINARY_FILES_REMAP ${SPIRV})
 endforeach (RSPIRV)
 
 list(APPEND SPIRV_BINARY_FILES ${SPIRV_BINARY_FILES_OPT})
@@ -139,6 +140,6 @@ add_dependencies(vkl-lib Shaders)
 
 generate_export_header(vkl-lib EXPORT_FILE_NAME ${PROJECT_BINARY_DIR}/include/vkl/sample_library_export.hpp)
 
-if(NOT BUILD_SHARED_LIBS)
-  target_compile_definitions(vkl-lib PUBLIC SAMPLE_LIBRARY_STATIC_DEFINE)
-endif()
+if (NOT BUILD_SHARED_LIBS)
+    target_compile_definitions(vkl-lib PUBLIC SAMPLE_LIBRARY_STATIC_DEFINE)
+endif ()

@@ -7,7 +7,7 @@ App::App(GLFWwindow *window) : window(window) { main_loop(); }
 
 void App::main_loop() {
     FPSCounter fps_counter{window, WTITILE};
-    while(!glfwWindowShouldClose(window)) {
+    while(!glfwWindowShouldClose(window)) { // NOLINT(*-implicit-bool-conversion)
         glfwPollEvents();
         fps_counter.frameInTitle();
     }
