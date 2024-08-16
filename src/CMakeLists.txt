@@ -1,2 +1,2 @@
-add_subdirectory(sample_library)
-add_subdirectory(ftxui_sample)
+add_subdirectory(vkl_lib)
+add_subdirectory(vkl)
