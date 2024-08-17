@@ -1,41 +1,60 @@
 #pragma once
-#include "../headers.hpp"
 #include <GLFW/glfw3.h>
 #include "instance.hpp"
+#include "../logging/logger.hpp"
 
 /**
  * @brief Vroom vroom.
  *
  */
 class Engine {
-public:
-    /**
-     * @brief Construct a new Engine object
-     *
-     * @param window main window to render to
-     */
-    Engine(GLFWwindow *window);
 
-    /**
-     * @brief Destroy the Engine object
-     *
-     */
-    ~Engine();
+public:
+
+ /**
+  * @brief Construct a new Engine object
+  *
+  * @param window main window to render to
+  */
+ Engine(GLFWwindow* window);
+
+ /**
+  * @brief Destroy the Engine object
+  *
+  */
+ ~Engine();
 
 private:
-    /**
-     * @brief Main window
-     *
-     */
-    GLFWwindow *window;
 
-    /**
-     *@brief Stores destructors
-     */
-    std::deque<std::function<void()>> deletionQueue;
+ /**
+  * @brief static debug logger
+  *
+  */
+ Logger* logger{ Logger::get_logger() };
 
-    /**
-     * @brief the main instance
-     */
-    vk::Instance instance;
+ /**
+  * @brief Main window
+  *
+  */
+ GLFWwindow* window;
+
+ /**
+ * @brief Stores destructors!
+ */
+ std::deque<std::function<void(vk::Instance)>> deletionQueue;
+
+ /**
+ * @brief the main instance
+ */
+ vk::Instance instance;
+
+ /**
+ * @brief dynamic instance dispatcher
+ */
+ vk::DispatchLoaderDynamic dldi;
+
+ /**
+ * @brief Debug messenger
+ */
+ vk::DebugUtilsMessengerEXT debugMessenger = nullptr;
 };

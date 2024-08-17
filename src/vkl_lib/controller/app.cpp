@@ -3,7 +3,11 @@
 
 #include <vkl/FPSCounter.hpp>
 
-App::App(GLFWwindow *window) : window(window) { main_loop(); }
+App::App(GLFWwindow* window) : window(window) , logger(Logger::get_logger()) {
+    LINFO("Made a new app");
+
+	main_loop();
+}
 
 void App::main_loop() {
     FPSCounter fps_counter{window, WTITILE};

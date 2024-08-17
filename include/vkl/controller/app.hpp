@@ -1,6 +1,7 @@
 #pragma once
 #include "../headers.hpp"
 #include <GLFW/glfw3.h>
+#include "../logging/logger.hpp"
 
 /**
  * @brief The main program.
@@ -24,4 +25,9 @@ private:
      * @brief the main window for the program
      */
     GLFWwindow *window;
+
+    /**
+     * @brief static debug logger
+     */
+    Logger *logger;
 };

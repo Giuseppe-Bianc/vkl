@@ -8,7 +8,8 @@ add_library(vkl-lib
         renderer/renderer.cpp
         controller/app.cpp
         backend/glfw_backend.cpp
-        renderer/instance.cpp)
+        renderer/instance.cpp
+        logging/logger.cpp)
 
 
 add_library(vkl::vkl-lib ALIAS vkl-lib)

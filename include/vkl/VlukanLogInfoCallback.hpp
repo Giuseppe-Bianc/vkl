@@ -4,6 +4,7 @@
 // NOLINTBEGIN(*-include-cleaner)
 #pragma once
 
+#include <vulkan/vk_enum_string_helper.h>
 #include "vulkanCheck.hpp"
 
 DISABLE_WARNINGS_PUSH(26429 26481)
@@ -101,50 +102,18 @@ inline void logDebugValidationLayerInfo(const VkDebugUtilsMessengerCallbackDataE
 }
 
 [[nodiscard]] inline static constexpr std::string_view debugCallbackString(VkDebugUtilsMessageTypeFlagsEXT messageType) noexcept {
-  switch(messageType) {
-  case VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT:
-    return "[General] ";
-  case VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT:
-    return "[Validation] ";
-  case VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT:
-    return "[Performance] ";
-  default:
-    return "";
-  }
+    switch(messageType) {
+    case VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT:
+        return "[General] ";
+    case VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT:
+        return "[Validation] ";
+    case VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT:
+        return "[Performance] ";
+    default:
+        return "";
+    }
 }
 
-inline static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
-                                                           VkDebugUtilsMessageTypeFlagsEXT messageType,
-                                                           const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
-                                                           [[maybe_unused]] void *pUserData) {
-  // Determine the message type
-  const std::string_view type = debugCallbackString(messageType);
 
-  // Format and log the message
-  const auto msg = FORMAT("{}Message ID: {}({}): {}", type, pCallbackData->pMessageIdName ? pCallbackData->pMessageIdName : "Unknown",
-                          pCallbackData->messageIdNumber, pCallbackData->pMessage);
-
-  switch(messageSeverity) {
-  case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
-    LTRACE(msg);
-    break;
-  case VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT:
-    LINFO(msg);
-    break;
-  case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
-    LWARN(msg);
-    break;
-  case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
-    LERROR(msg);
-    break;
-  default:
-    LDEBUG(msg);
-    break;
-  }
-
-  logDebugValidationLayerInfo(pCallbackData, messageSeverity);
-
-  return VK_FALSE;
-}
 DISABLE_WARNINGS_POP()
 // NOLINTEND(*-include-cleaner)
