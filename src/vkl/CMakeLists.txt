@@ -1,7 +1,7 @@
-add_executable(vkl main.cpp)
+add_executable(Vkl main.cpp)
 
 # Retrieve the target name
-get_target_property(target_name vkl NAME)
+get_target_property(target_name Vkl NAME)
 
 if (CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
     target_compile_options(${target_name} PRIVATE -march=native)
@@ -17,16 +17,16 @@ else ()
 endif ()
 
 target_link_libraries(
-        vkl
+        Vkl
         PRIVATE vkl::vkl_options
         vkl::vkl_warnings)
 
 target_link_system_libraries(
-        vkl
+        Vkl
         PRIVATE
         fmt::fmt
         spdlog::spdlog
         vkl-lib
 )
 
-target_include_directories(vkl PRIVATE "${CMAKE_BINARY_DIR}/configured_files/include")
+target_include_directories(Vkl PRIVATE "${CMAKE_BINARY_DIR}/configured_files/include")

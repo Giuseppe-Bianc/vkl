@@ -5,11 +5,9 @@ add_library(vkl-lib
         vkl.cpp
         Window.cpp
         FPSCounter.cpp
-        renderer/renderer.cpp
-        controller/app.cpp
-        backend/glfw_backend.cpp
-        renderer/instance.cpp
-        logging/logger.cpp)
+        app.cpp
+        Pipeline.cpp
+        Device.cpp)
 
 
 add_library(vkl::vkl-lib ALIAS vkl-lib)

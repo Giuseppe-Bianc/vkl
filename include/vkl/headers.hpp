@@ -192,6 +192,7 @@ template <typename T> struct fmt::formatter<std::complex<T>> : fmt::formatter<st
         return fmt::formatter<std::string_view>::format(name, ctx);
     }
 };
+
 /** \endcond */
 
 /**

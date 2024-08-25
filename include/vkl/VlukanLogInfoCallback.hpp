@@ -101,7 +101,7 @@ inline void logDebugValidationLayerInfo(const VkDebugUtilsMessengerCallbackDataE
     logObjects(pCallbackData, messageSeverity);
 }
 
-[[nodiscard]] inline static constexpr std::string_view debugCallbackString(VkDebugUtilsMessageTypeFlagsEXT messageType) noexcept {
+[[nodiscard]] static constexpr std::string_view debugCallbackString(VkDebugUtilsMessageTypeFlagsEXT messageType) noexcept {
     switch(messageType) {
     case VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT:
         return "[General] ";

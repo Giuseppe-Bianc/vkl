@@ -131,7 +131,7 @@ include(cmake/PackageProject.cmake)
 # we know we want to ship
 vkl_package_project(
   TARGETS
-        vkl
+        Vkl
   vkl_options
   vkl_warnings
   # FIXME: this does not work! CK
