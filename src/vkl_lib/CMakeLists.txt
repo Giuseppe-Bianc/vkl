@@ -7,7 +7,9 @@ add_library(vkl-lib
         FPSCounter.cpp
         app.cpp
         Pipeline.cpp
-        Device.cpp)
+        Device.cpp
+        ../../include/SwapChain.cpp
+        ../../include/SwapChain.hpp)
 
 
 add_library(vkl::vkl-lib ALIAS vkl-lib)

@@ -1,11 +1,11 @@
 #pragma once
 // NOLINTBEGIN(*-include-cleaner)
-#include "Window.hpp"
 #include "Pipeline.hpp"
+#include "Window.hpp"
 #include "headers.hpp"
 #include "vulkanCheck.hpp"
 
-//#include <vkl/VlukanLogInfoCallback.hpp>
+// #include <vkl/VlukanLogInfoCallback.hpp>
 
 /*template <typename T, auto N> auto tryConvertFormat(const vk::ArrayWrapper1D<T, N> &var) -> std::string {
     if constexpr(std::is_same_v<T, char>) {
@@ -18,9 +18,8 @@
 // NOLINTBEGIN(*-lambda-function-name)
 inline void print_extensions(const std::vector<VkExtensionProperties> &extensions) {
     const vnd::AutoTimer timer("print_extensions");
-    std::ranges::for_each(extensions, [](const auto &extension) {
-        LINFO("  \'{} (v. {})\'", extension.extensionName, extension.specVersion);
-    });
+    std::ranges::for_each(extensions,
+                          [](const auto &extension) { LINFO("  \'{} (v. {})\'", extension.extensionName, extension.specVersion); });
 }
 inline std::string report_version_numberstr(uint32_t version) {
     return FORMAT("Variant: {}, Major: {}, Minor: {}, Patch: {}", VK_API_VERSION_VARIANT(version), VK_API_VERSION_MAJOR(version),
@@ -47,20 +46,26 @@ namespace lve {
 
     class App {
     public:
-        App() {
-            //LINFO("{}",Window::calculateRelativePathToSrcShaders(curentP,"simple_shader.vert.opt.rmp.spv").string());
-            //LINFO("{}",Window::calculateRelativePathToSrcShaders(curentP,"simple_shader.frag.opt.rmp.spv").string());
-        };
+        App();
+        ~App();
+
         App(const App &) = delete;
-        App &operator=(const App &) = delete;
+        App &operator=(const FirstApp &) = delete;
 
         void run();
 
     private:
-        lve::Window window{WWIDTH, WHEIGHT, WTITILE};
-        lve::Pipeline pipeline{Window::calculateRelativePathToSrcShaders(curentP, "simple_shader.vert.opt.rmp.spv").string(),
-                               Window::calculateRelativePathToSrcShaders(curentP, "simple_shader.frag.opt.rmp.spv").string()};
-        //lve::Pipeline pipeline{"../../../shaders/simple_shader.vert.opt.rmp.spv", "../../../shaders/simple_shader.frag.opt.rmp.spv"};
+        void createPipelineLayout();
+        void createPipeline();
+        void createCommandBuffers();
+        void drawFrame();
+
+        Window lveWindow{WWIDTH, WHEIGHT, WTITILE};
+        Device lveDevice{lveWindow};
+        SwapChain lveSwapChain{lveDevice, lveWindow.getExtent()};
+        std::unique_ptr<Pipeline> lvePipeline;
+        VkPipelineLayout pipelineLayout;
+        std::vector<VkCommandBuffer> commandBuffers;
     };
 }  // namespace lve
 

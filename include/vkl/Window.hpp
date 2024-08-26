@@ -41,7 +41,7 @@ namespace lve {
         [[nodiscard]] static fs::path calculateRelativePathToSrcShaders(const fs::path &executablePath, const fs::path &targetFile);
         [[nodiscard]] static fs::path calculateRelativePathToSrcModels(const fs::path &executablePath, const fs::path &targetFile);
         void createWindowSurface(VkInstance instance, VkSurfaceKHR *surface);
-        //[[nodiscard]] VkExtent2D getExtent() const noexcept { return {C_UI32T(width), C_UI(height)}; }
+        [[nodiscard]] VkExtent2D getExtent() const noexcept { return {C_UI32T(width), C_UI32T(height)}; }
         [[nodiscard]] bool wasWindowResized() noexcept { return framebufferResized; }
         void resetWindowResizedFlag() noexcept { framebufferResized = false; }
 

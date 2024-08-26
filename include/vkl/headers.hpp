@@ -90,6 +90,7 @@ static inline constexpr char PNT = '.';
 static inline constexpr char ECR = 'E';
 static inline constexpr const auto *CRNL = "\r\n";
 static inline constexpr char ctab = '\t';
+#define STATUS_BREAKPOINT                ((NTSTATUS)0x80000003L)
 
 #ifdef _WIN32                                     // Windows
 static inline constexpr const auto *NEWL = CRNL;  // Windows

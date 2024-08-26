@@ -117,6 +117,105 @@ namespace lve {
         hasGflwRequiredInstanceExtensions();
     }
 
+    std::string getVendorName(uint32_t vendorID) {
+        static const std::unordered_map<uint32_t, std::string> vendorMap = {
+            {0x1002, "Advanced Micro Devices, Inc. (AMD)"},
+            {0x1010, "ImgTec"},
+            {0x10DE, "NVIDIA Corporation"},
+            {0x13B5, "ARM"},
+            {0x5143, "Qualcomm"},
+            {0x8086, "Intel Corporation"},
+            {0x1A03, "ASPEED Technology"},
+            {0x1D17, "Samsung Electronics Co Ltd"},
+            {0x1E0F, "Huawei Technologies Co., Ltd."},
+            {0x1B36, "Red Hat, Inc."},
+            {0x1AF4, "Virtio"},
+            {0x1C58, "JMicron Technology Corp."},
+            {0x1106, "VIA Technologies, Inc."},
+            {0x103C, "Hewlett-Packard Company"},
+            {0x1022, "Advanced Micro Devices, Inc. (AMD)"},
+            {0x102B, "Matrox Electronic Systems Ltd."},
+            {0x1043, "ASUSTeK Computer Inc."},
+            {0x1179, "Toshiba Corporation"},
+            {0x11AB, "Marvell Technology Group Ltd."},
+            {0x1237, "Intel Corporation (i440FX)"},
+            {0x15B7, "SanDisk"},
+            {0x168C, "Qualcomm Atheros"},
+            {0x1912, "Renesas Electronics Corporation"},
+            {0x1B4B, "Marvell Technology Group Ltd."},
+            {0x1C5C, "Fresco Logic"},
+            {0x1D6A, "Google, Inc."},
+            {0x8087, "Intel Corporation"},
+            {0x1057, "Motorola"},
+            {0x1077, "QLogic Corp."},
+            {0x1095, "Silicon Image, Inc."},
+            {0x10EC, "Realtek Semiconductor Corp."},
+            {0x11C1, "Lattice Semiconductor Corporation"},
+            {0x14E4, "Broadcom Inc."},
+            {0x15AD, "VMware, Inc."},
+            {0x15BC, "Hitachi, Ltd."},
+            {0x18D1, "Google Inc."},
+            {0x1AE0, "Xilinx, Inc."},
+            {0x1D0F, "Amazon.com, Inc."},
+            {0x1C7C, "Tehuti Networks Ltd."},
+            {0x16C3, "Cavium Inc."},
+            {0x105A, "Promise Technology"},
+            {0x12D8, "Pericom Semiconductor"},
+            {0x1B21, "ASMedia Technology Inc."},
+            {0x126F, "Silicon Motion, Inc."},
+            {0x1137, "Cisco Systems Inc."},
+            {0x1DB1, "Lite-On Technology Corporation"},
+            {0x10B5, "PLX Technology, Inc."},
+            {0x10B7, "3Com Corporation"},
+            {0x15E8, "Solarflare Communications"},
+            {0x1A3B, "Facebook, Inc."},
+            {0x1CC4, "Innogrit, Inc."},
+            {0x1C20, "Mellanox Technologies"},
+            // Add more vendor IDs and their corresponding names here if needed
+        };
+
+        auto it = vendorMap.find(vendorID);
+        if(it != vendorMap.end()) {
+            return it->second;
+        } else {
+            return "Unknown Vendor";
+        }
+    }
+
+    static inline const char *getDeviceType(VkPhysicalDeviceType input_value) {
+        switch(input_value) {
+        case VK_PHYSICAL_DEVICE_TYPE_OTHER:
+            return "OTHER";
+        case VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU:
+            return "INTEGRATED_GPU";
+        case VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU:
+            return "DISCRETE_GPU";
+        case VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU:
+            return "VIRTUAL_GPU";
+        case VK_PHYSICAL_DEVICE_TYPE_CPU:
+            return "CPU";
+        default:
+            return "Unhandled VkPhysicalDeviceType";
+        }
+    }
+
+
+    void printPhysicalDeviceProperties(const VkPhysicalDeviceProperties &properties) {
+        LINFO("Device Name: {}", properties.deviceName);
+        LINFO("API Version: {}.{}.{}", VK_VERSION_MAJOR(properties.apiVersion), VK_VERSION_MINOR(properties.apiVersion),
+              VK_VERSION_PATCH(properties.apiVersion));
+        LINFO("Driver Version: {}.{}.{}", VK_VERSION_MAJOR(properties.driverVersion), VK_VERSION_MINOR(properties.driverVersion),
+              VK_VERSION_PATCH(properties.driverVersion));
+        LINFO("Vendor ID: {}", getVendorName(properties.vendorID));
+        LINFO("Device ID: {}", properties.deviceID);
+        LINFO("Device Type: {}", getDeviceType(properties.deviceType));
+        LINFO("pipelineCacheUUID: {:02x}", FMT_JOIN(properties.pipelineCacheUUID, "-"));
+
+        // Add more properties as needed
+    }
+
+
+
     void Device::pickPhysicalDevice() {
         uint32_t deviceCount = 0;
         vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
@@ -129,11 +228,7 @@ namespace lve {
         if(physicalDevice == VK_NULL_HANDLE) [[unlikely]] { throw std::runtime_error("failed to find a suitable GPU!"); }
         vkGetPhysicalDeviceProperties(physicalDevice, &properties);
         LINFO("Dev count: {}", deviceCount);
-        LINFO("API Ver: {}", properties.apiVersion);
-        LINFO("Drv Ver: {}", properties.driverVersion);
-        LINFO("Vendor ID: {}", properties.vendorID);
-        LINFO("Phys Dev ID: {}", properties.deviceID);
-        LINFO("Phys Dev Name: phys dev{}", properties.deviceName);
+        printPhysicalDeviceProperties(properties);
     }
 
     void Device::createLogicalDevice() {
@@ -196,7 +291,6 @@ namespace lve {
         poolInfo.flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT | VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 
         VK_CHECK(vkCreateCommandPool(device_, &poolInfo, nullptr, &commandPool), "failed to create command pool!");
-
     }
 
     void Device::createSurface() { window.createWindowSurface(instance, &surface_); }
@@ -229,11 +323,10 @@ namespace lve {
     }
 
     void Device::setupDebugMessenger() {
-        if(!enableValidationLayers) {return;}
+        if(!enableValidationLayers) { return; }
         VkDebugUtilsMessengerCreateInfoEXT createInfo;
         populateDebugMessengerCreateInfo(createInfo);
         VK_CHECK(CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger), "failed to set up debug messenger!");
-
     }
 
     bool Device::checkValidationLayerSupport() {
@@ -288,8 +381,6 @@ namespace lve {
             LINFO("  {} (v. {})", extensionName, specVersion);
             available.emplace(extensionName);
         }
-
-
 
         LINFO("required extensions:");
         for(const auto requiredExtensions = getRequiredExtensions(); const auto &required : requiredExtensions) {
@@ -363,8 +454,7 @@ namespace lve {
         return details;
     }
 
-    VkFormat Device::findSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling,
-                                                 VkFormatFeatureFlags features) {
+    VkFormat Device::findSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling, VkFormatFeatureFlags features) {
         for(VkFormat format : candidates) {
             VkFormatProperties props;
             vkGetPhysicalDeviceFormatProperties(physicalDevice, format, &props);
@@ -390,7 +480,7 @@ namespace lve {
     }
 
     void Device::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags dproperties, VkBuffer &buffer,
-                                      VkDeviceMemory &bufferMemory) {
+                              VkDeviceMemory &bufferMemory) {
         VkBufferCreateInfo bufferInfo{};
         bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
         bufferInfo.size = size;
@@ -477,7 +567,7 @@ namespace lve {
     }
 
     void Device::createImageWithInfo(const VkImageCreateInfo &imageInfo, VkMemoryPropertyFlags dproperties, VkImage &image,
-                                             VkDeviceMemory &imageMemory) {
+                                     VkDeviceMemory &imageMemory) {
         if(vkCreateImage(device_, &imageInfo, nullptr, &image) != VK_SUCCESS) { throw std::runtime_error("failed to create image!"); }
 
         VkMemoryRequirements memRequirements;
