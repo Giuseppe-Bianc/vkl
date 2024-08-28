@@ -199,7 +199,6 @@ namespace lve {
         }
     }
 
-
     void printPhysicalDeviceProperties(const VkPhysicalDeviceProperties &properties) {
         LINFO("Device Name: {}", properties.deviceName);
         LINFO("API Version: {}.{}.{}", VK_VERSION_MAJOR(properties.apiVersion), VK_VERSION_MINOR(properties.apiVersion),
@@ -213,8 +212,6 @@ namespace lve {
 
         // Add more properties as needed
     }
-
-
 
     void Device::pickPhysicalDevice() {
         uint32_t deviceCount = 0;
@@ -372,21 +369,22 @@ namespace lve {
         vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
         std::vector<VkExtensionProperties> extensions(extensionCount);
         vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, extensions.data());
-
-        LINFO("available extensions:");
         std::unordered_set<std::string_view> available;
         available.reserve(extensionCount);  // Riserviamo spazio per migliorare le prestazioni
 
+        std::vector<std::string> availableExtensions;
+        available.reserve(extensionCount);
         for(const auto &[extensionName, specVersion] : extensions) {
-            LINFO("  {} (v. {})", extensionName, specVersion);
+            availableExtensions.emplace_back(FORMAT("{} (v. {})", extensionName, specVersion));
             available.emplace(extensionName);
         }
 
-        LINFO("required extensions:");
-        for(const auto requiredExtensions = getRequiredExtensions(); const auto &required : requiredExtensions) {
-            LINFO("  {0}", required);
+        const auto requiredExtensions = getRequiredExtensions();
+        for(const auto &required : requiredExtensions) {
             if(!available.contains(required)) [[unlikely]] { throw std::runtime_error("Missing required glfw extension"); }
         }
+        LINFO("available extensions:\n  {}\nrequired extensions:\n  {}", FMT_JOIN(availableExtensions, "\n  "),
+              FMT_JOIN(requiredExtensions, "\n  "));
     }
 
     bool Device::checkDeviceExtensionSupport(VkPhysicalDevice device) {

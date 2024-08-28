@@ -1,6 +1,7 @@
 #pragma once
 // NOLINTBEGIN(*-include-cleaner)
 #include "Pipeline.hpp"
+#include "SwapChain.hpp"
 #include "Window.hpp"
 #include "headers.hpp"
 #include "vulkanCheck.hpp"
@@ -50,7 +51,7 @@ namespace lve {
         ~App();
 
         App(const App &) = delete;
-        App &operator=(const FirstApp &) = delete;
+        App &operator=(const App &) = delete;
 
         void run();
 
@@ -64,7 +65,7 @@ namespace lve {
         Device lveDevice{lveWindow};
         SwapChain lveSwapChain{lveDevice, lveWindow.getExtent()};
         std::unique_ptr<Pipeline> lvePipeline;
-        VkPipelineLayout pipelineLayout;
+        VkPipelineLayout pipelineLayout{};
         std::vector<VkCommandBuffer> commandBuffers;
     };
 }  // namespace lve

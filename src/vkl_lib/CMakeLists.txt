@@ -8,8 +8,8 @@ add_library(vkl-lib
         app.cpp
         Pipeline.cpp
         Device.cpp
-        ../../include/SwapChain.cpp
-        ../../include/SwapChain.hpp)
+        SwapChain.cpp
+        ../../include/vkl/SwapChain.hpp)
 
 
 add_library(vkl::vkl-lib ALIAS vkl-lib)
